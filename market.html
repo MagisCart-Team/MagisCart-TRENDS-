@@ -1,17 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-bluedark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/global.css">
     
-    <title>MagisCart: Marketplace</title>
+    <title>MagisCart - Marketplace</title>
     <meta name="description" content="A Dual-Interfaced POS and Inventory System for Official ADNU Student Organizations">
     
     <!-- Tailwind CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- tailwind theme -->
+    <style type="text/tailwindcss">
+    @theme {
+        --color-bluelight: #4E68FD;
+        --color-blueprimary: #2237AF;
+        --color-bluedark: #081563;
+        --color-blueblack: #0A0E2A;
+        --color-yellowprimary: #F6D560;
+        --color-whiteprimary: #DADEEB;
+    }
+    </style>
 </head>
 
-<body>
-    
+<body class="bg-radial from-bluedark to-blueblack">
+    <!-- Nav -->
+    <nav class="px-10 py-10">
+        <!-- <span class="nav-logo"><img src="/assets/images/magiscart_logo.png" alt="magiscart logo" class="h-10 w-auto"></span> -->
+        <span class="text-blue-800 text-2xl"><span class="font-bold">MAGIS</span>CART</span>
+    </nav>
+
+    <!-- Header, Search bars, and Gallery -->
+    <div class="flex flex-col gap-10 min-h-screen">
+        <div class="flex flex-col gap-6 justify-center items-center">
+            <h1 class="text-6xl font-bold text-blueprimary">Official ADNU<br>Organizations</h1>
+            
+            <div class="flex gap-5">
+                <input type="text" name="orgSearch" id="org-search-input" placeholder="Search organizations" class="px-4 py-2 rounded-xl bg-whiteprimary text-zinc-600 text-[0.7rem] outline-none w-68 focus:ring-2 focus:ring-blueprimary">
+                <input type="text" name="shopCode" id="shop-code-input" placeholder="Enter Shop Code" class="px-4 py-2 rounded-xl bg-whiteprimary text-zinc-600 text-[0.7rem] outline-none w-36 focus:ring-2 focus:ring-blueprimary">
+            </div>
+        </div>
+
+        <div class="w-fit mx-auto">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-rows-2 gap-4">
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+                <div class="w-36 h-42 bg-whiteprimary rounded-lg"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

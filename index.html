@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-bluedark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,23 +11,21 @@
     <!-- Tailwind CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <!-- Tailwind config -->
-     <script>
-        tailwind.config = {
-            theme: {
-            extend: {
-                colors: {
-                primary: 'var(--color-primary)',
-                dark: 'var(--color-dark)',
-                },
-            },
-            },
-        }
-    </script>
+    <!-- Tailwind theme -->
+    <style type="text/tailwindcss">
+    @theme {
+        --color-bluelight: #4E68FD;
+        --color-blueprimary: #2237AF;
+        --color-bluedark: #081563;
+        --color-blueblack: #0A0E2A;
+        --color-yellowprimary: #F6D560;
+        --color-whiteprimary: #DADEEB;
+    }
+    </style>
 </head>
 
 <body>
-    <div class="bg-radial from-[#081563] to-[#0A0E2A]">
+    <div class="bg-radial from-bluedark to-blueblack">
         <!-- Nav -->
          <nav class="px-10 py-10">
             <!-- <span class="nav-logo"><img src="/assets/images/magiscart_logo.png" alt="magiscart logo" class="h-10 w-auto"></span> -->
@@ -35,9 +33,9 @@
          </nav>
          <!-- Hero -->
           <section class="flex flex-col justify-top py-32 items-center text-center min-h-screen">
-            <div class="py-7 text-[#2237AF] text-8xl font-bold leading-[0.8]">Empowering <span class="block">Campus Commerce</span></div>
-            <div class="text-[#4E68FD] text-md">
-                A centralized hub for Ateneo de Naga University student organization <span class="block">merchandise and inventory management</span>
+            <div class="py-7 text-blueprimary text-8xl font-bold leading-[0.8]">Empowering<br>Campus Commerce</div>
+            <div class="text-bluelight text-md">
+                A centralized hub for Ateneo de Naga University student organization<br>merchandise and inventory management
             </div>
             <div class="flex py-10 justify-center gap-5">
                 <a href="market.html" class="flex items-center text-black font-bold bg-white text-lg px-8 py-1 rounded-lg">Explore Marketplace</a>
