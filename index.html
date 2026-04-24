@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="/css/global.css">
     
     <title>MagisCart</title>
@@ -19,27 +21,37 @@
         --color-bluedark: #081563;
         --color-blueblack: #0A0E2A;
         --color-yellowprimary: #F6D560;
-        --color-whiteprimary: #DADEEB;
+        --color-whiteprimary: #FFFFFF;
+        --color-greyprimary: #D9D9D9;
+    }
+    @theme {
+        --background-image-radial-blue: radial-gradient(
+        ellipse 70% 65% at 65% 38%,
+        rgba(78, 104, 253, 0.75) 0%,
+        #2237AF 40%,
+        #081563 70%,
+        #0A0E2A 100%
+        );
     }
     </style>
 </head>
 
 <body>
-    <div class="bg-radial from-bluedark to-blueblack">
+    <div class="bg-radial-blue">
         <!-- Nav -->
          <nav class="px-10 py-10">
             <!-- <span class="nav-logo"><img src="/assets/images/magiscart_logo.png" alt="magiscart logo" class="h-10 w-auto"></span> -->
-            <span class="text-blue-800 text-2xl"><span class="font-bold">MAGIS</span>CART</span>
+            <span class="text-blueprimary text-2xl"><span class="font-bold">MAGIS</span>CART</span>
          </nav>
          <!-- Hero -->
           <section class="flex flex-col justify-top py-32 items-center text-center min-h-screen">
-            <div class="py-7 text-blueprimary text-8xl font-bold leading-[0.8]">Empowering<br>Campus Commerce</div>
-            <div class="text-bluelight text-md">
+            <div class="py-7 text-whiteprimary text-8xl font-bold leading-[0.8] tracking-tight">Empowering<br>Campus Commerce</div>
+            <div class="text-yellowprimary text-md tracking-tight">
                 A centralized hub for Ateneo de Naga University student organization<br>merchandise and inventory management
             </div>
             <div class="flex py-10 justify-center gap-5">
-                <a href="market.html" class="flex items-center text-black font-bold bg-white text-lg px-8 py-1 rounded-lg">Explore Marketplace</a>
-                <a href="#" class="flex items-center text-black font-bold bg-white text-lg px-14 py-1 rounded-lg">Officer Login</a>
+                <a href="market.html" class="flex items-center text-black font-bold bg-white text-lg px-10 py-3 rounded-lg tracking-tight">Explore Marketplace</a>
+                <a href="#" class="flex items-center text-black font-bold bg-white text-lg px-16 py-3 rounded-lg tracking-tight">Officer Login</a>
             </div>
           </section>
     </div>
