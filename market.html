@@ -1,77 +1,588 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-blueblack">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/global.css">
-    
     <title>MagisCart - Marketplace</title>
     <meta name="description" content="A Dual-Interfaced POS and Inventory System for Official ADNU Student Organizations">
-    
+    <link rel="stylesheet" href="css/global.css">
+
     <!-- Tailwind CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <!-- tailwind theme -->
     <style type="text/tailwindcss">
-    @theme {
-        --color-bluelight: #4E68FD;
-        --color-blueprimary: #2237AF;
-        --color-bluedark: #081563;
-        --color-blueblack: #0A0E2A;
-        --color-yellowprimary: #F6D560;
-        --color-whiteprimary: #DADEEB;
-    }
-    @theme {
-        --background-image-radial-blue: radial-gradient(
-        ellipse 70% 65% at 65% 38%,
-        rgba(78, 104, 253, 0.75) 0%,
-        #2237AF 40%,
-        #081563 70%,
-        #0A0E2A 100%
-        );
-    }
+        @theme {
+            --color-bluelight:     #4E68FD;
+            --color-blueprimary:   #2237AF;
+            --color-bluedark:      #081563;
+            --color-blueblack:     #0A0E2A;
+            --color-yellowprimary: #F6D560;
+            --color-whiteprimary:  #DADEEB;
+        }
+
+        /* ── Keyframes ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shimmer {
+            0%   { background-position: -500px 0; }
+            100% { background-position:  500px 0; }
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes rippleOut {
+            to { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* ── Utility classes ── */
+
+        /* Staggered card entrance */
+        .animate-fade-up { animation: fadeUp 0.5s ease both; }
+        .delay-0  { animation-delay: 0.00s; }
+        .delay-1  { animation-delay: 0.06s; }
+        .delay-2  { animation-delay: 0.12s; }
+        .delay-3  { animation-delay: 0.18s; }
+        .delay-4  { animation-delay: 0.24s; }
+        .delay-5  { animation-delay: 0.30s; }
+        .delay-6  { animation-delay: 0.36s; }
+        .delay-7  { animation-delay: 0.42s; }
+        .delay-8  { animation-delay: 0.48s; }
+        .delay-9  { animation-delay: 0.54s; }
+        .delay-10 { animation-delay: 0.60s; }
+        .delay-11 { animation-delay: 0.66s; }
+        .delay-12 { animation-delay: 0.72s; }
+
+        /* Shimmer on empty cards */
+        .card-shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(218,222,235,0.04) 25%,
+                rgba(218,222,235,0.10) 50%,
+                rgba(218,222,235,0.04) 75%
+            );
+            background-size: 500px 100%;
+            animation: shimmer 2.6s infinite linear;
+        }
+
+        /* Filled card hover magic */
+        .org-card-filled {
+            background: #DADEEB;
+            transition:
+                transform 0.32s cubic-bezier(.22,.68,0,1.2),
+                box-shadow 0.32s ease,
+                border-color 0.25s ease;
+        }
+        .org-card-filled:hover {
+            transform: translateY(-9px) scale(1.035);
+            box-shadow:
+                0 24px 56px rgba(246,213,96,0.20),
+                0 0 0 2px #F6D560;
+        }
+        .org-card-filled:active {
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        /* Empty card hover */
+        .org-card-empty {
+            background: rgba(218,222,235,0.04);
+            border: 1px solid rgba(218,222,235,0.07);
+            transition:
+                transform 0.28s cubic-bezier(.22,.68,0,1.2),
+                box-shadow 0.28s ease,
+                border-color 0.25s ease;
+        }
+        .org-card-empty:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(78,104,253,0.30);
+            box-shadow: 0 14px 36px rgba(78,104,253,0.12);
+        }
+
+        /* Chip that appears on filled card hover */
+        .browse-chip {
+            opacity: 0;
+            transform: translateY(7px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+        .org-card-filled:hover .browse-chip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* OPEN badge pop */
+        .open-badge {
+            opacity: 0;
+            transform: scale(0.75);
+            transition: opacity 0.18s ease, transform 0.22s cubic-bezier(.22,.68,0,1.2);
+        }
+        .org-card-filled:hover .open-badge {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Logo lift */
+        .card-logo {
+            transition: transform 0.32s ease;
+        }
+        .org-card-filled:hover .card-logo {
+            transform: scale(1.07) translateY(-3px);
+        }
+
+        /* Nav underline links */
+        .nav-link {
+            position: relative;
+            color: rgba(218,222,235,0.38);
+            font-size: 0.7rem;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+
+            transition: color 0.2s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0;
+            width: 0; height: 1px;
+            background: #F6D560;
+            transition: width 0.24s ease;
+        }
+        .nav-link:hover { color: #F6D560; }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Toastr */
+        .toast-anim { animation: toastIn 0.32s cubic-bezier(.22,.68,0,1.2) both; }
+
+        /* Input glow on focus */
+        .search-input {
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .search-input:focus {
+            border-color: rgba(78,104,253,0.6);
+            background: rgba(78,104,253,0.09);
+            box-shadow: 0 0 0 3px rgba(78,104,253,0.14);
+            outline: none;
+        }
+        .code-input:focus {
+            border-color: rgba(246,213,96,0.5);
+            background: rgba(246,213,96,0.06);
+            box-shadow: 0 0 0 3px rgba(246,213,96,0.10);
+            outline: none;
+        }
     </style>
 </head>
 
-<body class="bg-radial-blue">
-    <!-- Nav -->
-    <nav class="px-10 py-10">
-        <!-- <span class="nav-logo"><img src="/assets/images/magiscart_logo.png" alt="magiscart logo" class="h-10 w-auto"></span> -->
-        <span class="text-blue-800 text-2xl"><span class="font-bold">MAGIS</span>CART</span>
-    </nav>
+<body class="min-h-screen overflow-x-hidden" style="background:#0A0E2A;">
 
-    <!-- Header, Search bars, and Gallery -->
-    <div class="flex flex-col gap-10 min-h-screen">
-        <div class="flex flex-col gap-6 justify-center items-center">
-            <h1 class="text-7xl font-bold text-whiteprimary text-center tracking-tighter">Where are you<br><span class="text-yellowprimary">shopping</span> today?</h1>
-            <p class="text-yellowprimary text-center text-[0.85rem] font-thin -mt-2 pb-4">Search and choose an organization below to browse items and checkout.</p>
-            
-            <div class="flex gap-5">
-                <input type="text" name="orgSearch" id="org-search-input" placeholder="Search organizations" class="w-100 px-4 py-3 rounded-xl bg-whiteprimary text-zinc-600 text-[0.8rem] outline-none focus:ring-2 focus:ring-blueprimary">
-                <input type="text" name="shopCode" id="shop-code-input" placeholder="Enter Shop Code" class="px-4 py-3 rounded-xl bg-whiteprimary text-zinc-600 text-[0.8rem] outline-none w-36 focus:ring-2 focus:ring-blueprimary">
+    <!-- Radial gradient background -->
+    <div class="fixed inset-0 z-0 pointer-events-none"
+         style="background: radial-gradient(ellipse 75% 62% at 62% 32%,
+                rgba(78,104,253,0.68) 0%,
+                #2237AF 38%,
+                #081563 68%,
+                #0A0E2A 100%);"></div>
+
+    <!-- Subtle grid overlay -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-100"
+         style="background-image:
+                    repeating-linear-gradient(rgba(78,104,253,0.055) 0px,rgba(78,104,253,0.055) 1px,transparent 1px,transparent 48px),
+                    repeating-linear-gradient(90deg,rgba(78,104,253,0.055) 0px,rgba(78,104,253,0.055) 1px,transparent 1px,transparent 48px);"></div>
+
+    <!-- Toast -->
+    <div id="toast"
+         class="fixed bottom-7 left-1/2 z-50 hidden
+                px-5 py-3 rounded-2xl text-sm text-whiteprimary
+                border border-bluelight/25 shadow-2xl whitespace-nowrap"
+         style="background:rgba(8,21,99,0.92); backdrop-filter:blur(12px);">
+    </div>
+
+    <!-- Page -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- ── Nav ── -->
+        <nav class="px-10 py-8 flex items-center justify-between animate-fade-up delay-0">
+            <span class="text-[1.35rem] tracking-tight">
+                <span class="text-blueprimary font-extrabold">MAGIS</span><span class="text-whiteprimary font-bold">CART</span>
+            </span>
+            <div class="flex items-center gap-7">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="login.html" class="nav-link">Officer Login</a>
+                <!-- <a href="#" class="nav-link">Help</a> -->
             </div>
+        </nav>
+
+        <!-- ── Hero ── -->
+        <div class="flex flex-col gap-5 items-center pt-10 pb-10 px-4">
+
+            <div class="animate-fade-up delay-1
+                        text-[0.62rem] tracking-[0.22em] uppercase"
+                 style="color:rgba(218,222,235,0.28);">
+                ADNU Student Organizations
+            </div>
+
+            <h1 class="animate-fade-up delay-2
+                       font-extrabold text-center tracking-tighter leading-none"
+                style="font-size:clamp(2.8rem,6.5vw,4.4rem); color:#DADEEB;">
+                Where are you<br>
+                <span class="text-yellowprimary relative inline-block">
+                    shopping
+                    <!-- Accent underline -->
+                    <span class="absolute left-0 -bottom-1.5 w-full h-0.5 rounded-full"
+                          style="background:rgba(246,213,96,0.28);"></span>
+                </span>
+                today?
+            </h1>
+
+            <p class="animate-fade-up delay-3 text-center text-[0.82rem] -mt-1 pb-2"
+               style="color:rgba(218,222,235,0.38);">
+                Search and choose an organization below to browse items and checkout.
+            </p>
+
+            <!-- Search row -->
+            <div class="animate-fade-up delay-4 flex gap-3 flex-wrap justify-center">
+                <!-- Org search -->
+                <div class="relative">
+                    <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                         style="width:14px;height:14px;color:rgba(218,222,235,0.3);"
+                         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input id="org-search-input"
+                           type="text" autocomplete="off"
+                           placeholder="Search organizations"
+                           class="search-input pl-9 pr-4 py-3 w-88 rounded-2xl text-[0.8rem]
+                                  text-whiteprimary border"
+                           style="background:rgba(218,222,235,0.07);
+                                  border-color:rgba(218,222,235,0.10);">
+                </div>
+
+                <!-- Code input -->
+                <div class="relative">
+                    <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                         style="width:13px;height:13px;color:rgba(218,222,235,0.3);"
+                         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M7 7 2 12l5 5M17 7l5 5-5 5M14 3l-4 18"/>
+                    </svg>
+                    <input id="shop-code-input"
+                           type="text" autocomplete="off" maxlength="12"
+                           placeholder="Shop Code"
+                           class="code-input pl-9 pr-4 py-3 w-36 rounded-2xl text-[0.8rem]
+                                  text-whiteprimary border tracking-widest uppercase"
+                           style="background:rgba(218,222,235,0.07);
+                                  border-color:rgba(218,222,235,0.10);">
+                </div>
+
+                <!-- Enter button -->
+                <button id="go-btn"
+                        class="px-5 py-3 rounded-2xl font-bold text-[0.78rem]
+                               tracking-wide text-bluedark bg-yellowprimary cursor-pointer
+                               hover:bg-white hover:scale-105
+                               hover:shadow-lg
+                               active:scale-95
+                               transition-all duration-200"
+                        style="--tw-shadow-color:rgba(246,213,96,0.25);">
+                    Enter →
+                </button>
+            </div>
+
+            <!-- Result label -->
+            <div id="result-count"
+                 class="text-[0.68rem] tracking-wide h-4 transition-all duration-200"
+                 style="color:rgba(218,222,235,0.28);"></div>
         </div>
 
-        <div class="w-fit mx-auto">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-rows-3 gap-4">
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg flex flex-col" data-name="tactics" data-code="#">
-                    <img src="./assets/images/tactics_logo.png" alt="tactics logo" class="w-40 mx-auto">
-                    <h1 class="text-center font-bold text-blueprimary text-2xl -mt-1 pb-2">TACTICS</h1>
-                    <p class="text-[0.55rem] text-center px-4 pb-2 text-blueprimary">The Ateneo Consortium of Technological, Information, and Computing Sciences</p>
+        <!-- ── Card Gallery ── -->
+        <div class="w-fit mx-auto pb-20 px-4">
+
+            <!-- Divider -->
+            <div class="flex items-center gap-4 mb-6 animate-fade-up delay-5">
+                <div class="h-px flex-1" style="background:rgba(218,222,235,0.07);"></div>
+                <span class="text-[0.62rem] tracking-[0.18em] uppercase"
+                      style="color:rgba(218,222,235,0.22);">All Organizations</span>
+                <div class="h-px flex-1" style="background:rgba(218,222,235,0.07);"></div>
+            </div>
+
+            <!-- Grid -->
+            <a href="dashboardmain.html">
+                <div id="card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- ── TACTICS — Real Card ── -->
+                    <div class="org-card-filled rounded-2xl cursor-pointer relative overflow-hidden
+                                animate-fade-up delay-5 border-2 border-transparent"
+                         data-name="tactics" data-fullname="TACTICS" data-code="TAC001">
+                        <!-- OPEN badge -->
+                        <div class="open-badge absolute top-3 right-3 z-10
+                                    bg-yellowprimary text-bluedark font-bold
+                                    text-[0.5rem] tracking-widest uppercase
+                                    px-2.5 py-1 rounded-full">
+                            OPEN
+                        </div>
+                        <div class="flex flex-col items-center justify-center h-60 px-4 gap-1">
+                            <img src="./assets/images/tactics_logo.png"
+                                 alt="TACTICS logo"
+                                 class="card-logo w-36 object-contain drop-shadow-sm">
+                            <h2 class="font-extrabold text-blueprimary text-2xl tracking-tight">
+                                TACTICS
+                            </h2>
+                            <p class="text-[0.55rem] text-center px-3 leading-snug"
+                               style="color:rgba(34,55,175,0.6);">
+                                The Ateneo Consortium of Technological,<br>Information, and Computing Sciences
+                            </p>
+                        </div>
+                        <!-- Browse chip -->
+                        <div class="browse-chip absolute bottom-3 left-1/2 -translate-x-1/2
+                                    flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                                    bg-blueprimary text-whiteprimary text-[0.6rem]
+                                    tracking-wide whitespace-nowrap shadow-md">
+                            Browse Shop
+                            <svg style="width:12px;height:12px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+            </a>
+
+                <!-- ── Empty placeholder cards (11) ── -->
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-6">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-2">
+                        <div class="h-2 w-3/5 rounded-full" style="background:rgba(218,222,235,0.07);"></div>
+                        <div class="h-1.5 w-2/5 rounded-full" style="background:rgba(218,222,235,0.05);"></div>
+                    </div>
                 </div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
-                <div class="w-54 h-60 bg-whiteprimary rounded-lg" data-name="#" data-code="#"></div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-7">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-2">
+                        <div class="h-2 w-4/5 rounded-full" style="background:rgba(218,222,235,0.07);"></div>
+                        <div class="h-1.5 w-1/2 rounded-full" style="background:rgba(218,222,235,0.05);"></div>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-8">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-2">
+                        <div class="h-2 w-2/5 rounded-full" style="background:rgba(218,222,235,0.07);"></div>
+                        <div class="h-1.5 w-3/5 rounded-full" style="background:rgba(218,222,235,0.05);"></div>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-9">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-10">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-11">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-12">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-12">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-12">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-12">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="org-card-empty rounded-2xl overflow-hidden relative h-60 animate-fade-up delay-12">
+                    <div class="card-shimmer absolute inset-0"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-[0.58rem] tracking-widest uppercase"
+                              style="color:rgba(218,222,235,0.12);">Coming Soon</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Empty search state -->
+            <div id="empty-state" class="hidden flex-col items-center gap-3 py-16 text-center">
+                <svg style="width:40px;height:40px;color:rgba(218,222,235,0.14);"
+                     fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <p class="text-sm" style="color:rgba(218,222,235,0.32);">
+                    No organizations found for
+                    "<span id="empty-query" class="text-yellowprimary" style="opacity:0.65;"></span>"
+                </p>
+                <button onclick="clearSearch()"
+                        class="text-[0.72rem] underline underline-offset-2 transition-colors"
+                        style="color:rgba(78,104,253,0.6);">
+                    Clear search
+                </button>
             </div>
         </div>
     </div>
+
+    <script>
+        // ── Org registry ──────────────────────────────────────────────────────
+        const orgs = [
+            { name: 'tactics', fullname: 'TACTICS', code: 'TAC001' }
+        ];
+
+        // ── Ripple on card click ──────────────────────────────────────────────
+        function addRipple(card, e) {
+            const rect = card.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height) * 1.8;
+            const r = document.createElement('span');
+            r.style.cssText = `
+                position:absolute;
+                left:${e.clientX - rect.left - size/2}px;
+                top:${e.clientY - rect.top  - size/2}px;
+                width:${size}px; height:${size}px;
+                border-radius:50%;
+                background:rgba(34,55,175,0.16);
+                transform:scale(0);
+                animation:rippleOut 0.5s ease-out forwards;
+                pointer-events:none; z-index:30;
+            `;
+            if (!document.getElementById('ripple-kf')) {
+                const s = document.createElement('style');
+                s.id = 'ripple-kf';
+                s.textContent = '@keyframes rippleOut{to{transform:scale(2.5);opacity:0}}';
+                document.head.appendChild(s);
+            }
+            card.appendChild(r);
+            setTimeout(() => r.remove(), 550);
+        }
+
+        // ── Wire up filled cards ──────────────────────────────────────────────
+        document.querySelectorAll('[data-name]').forEach(card => {
+            card.addEventListener('pointerdown', e => addRipple(card, e));
+            card.addEventListener('click', () => {
+                const fn = card.dataset.fullname || card.dataset.name;
+                showToast(`Opening ${fn} shop…`);
+                // window.location.href = `/shop/${card.dataset.code}`;
+            });
+        });
+
+        // ── Search filter ─────────────────────────────────────────────────────
+        const searchInput = document.getElementById('org-search-input');
+        const resultCount = document.getElementById('result-count');
+        const emptyState  = document.getElementById('empty-state');
+        const emptyQuery  = document.getElementById('empty-query');
+        const cardGrid    = document.getElementById('card-grid');
+        const filledCards = document.querySelectorAll('[data-name]');
+        const emptyCells  = document.querySelectorAll('.org-card-empty');
+
+        function clearSearch() {
+            searchInput.value = '';
+            filterCards('');
+            searchInput.focus();
+        }
+
+        function filterCards(raw) {
+            const q = raw.toLowerCase().trim();
+            let hits = 0;
+
+            filledCards.forEach(c => {
+                const haystack = (c.dataset.name + ' ' + (c.dataset.fullname || '')).toLowerCase();
+                const visible = !q || haystack.includes(q);
+                c.style.display = visible ? '' : 'none';
+                if (visible) hits++;
+            });
+
+            // Hide empty placeholders during search
+            emptyCells.forEach(c => { c.style.display = q ? 'none' : ''; });
+
+            // Result count label
+            if (q) {
+                resultCount.textContent = hits
+                    ? `${hits} organization${hits > 1 ? 's' : ''} found`
+                    : '';
+                resultCount.style.color = hits
+                    ? 'rgba(246,213,96,0.5)'
+                    : 'transparent';
+            } else {
+                resultCount.textContent = '';
+            }
+
+            // Empty state
+            const noResults = q && hits === 0;
+            emptyState.classList.toggle('hidden', !noResults);
+            emptyState.classList.toggle('flex',    noResults);
+            cardGrid.style.display = noResults ? 'none' : '';
+            emptyQuery.textContent = raw;
+        }
+
+        searchInput.addEventListener('input', e => filterCards(e.target.value));
+
+        // ── Shop code ──────────────────────────────────────────────────────────
+        const codeInput = document.getElementById('shop-code-input');
+        const goBtn     = document.getElementById('go-btn');
+
+        function handleCode() {
+            const code = codeInput.value.trim().toUpperCase();
+            if (!code) { showToast('Please enter a shop code first.'); return; }
+            const match = orgs.find(o => o.code === code);
+            if (match) {
+                showToast(`Found: ${match.fullname} — opening shop…`);
+                // window.location.href = `/shop/${code}`;
+            } else {
+                showToast(`No shop found with code "${code}".`);
+                // Flash red border
+                codeInput.style.borderColor = 'rgba(239,68,68,0.55)';
+                codeInput.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.10)';
+                setTimeout(() => {
+                    codeInput.style.borderColor = '';
+                    codeInput.style.boxShadow   = '';
+                }, 1400);
+            }
+        }
+
+        goBtn.addEventListener('click', handleCode);
+        codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleCode(); });
+        searchInput.addEventListener('keydown', e => { if (e.key === 'Enter' && searchInput.value.trim()) filterCards(searchInput.value); });
+    </script>
 </body>
 </html>
