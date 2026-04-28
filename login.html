@@ -6,41 +6,45 @@
     
     <title>MagisCart: Login</title>
     <meta name="description" content="A Dual-Interfaced POS and Inventory System for Official ADNU Student Organizations">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <style>body { font-family: 'Montserrat', system-ui, sans-serif; }</style>
     
     <!-- Tailwind CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body class="bg-slate-950 text-slate-100">
-    <div class="bg-radial-blue">
+<body class="min-h-screen bg-[radial-gradient(ellipse_70%_65%_at_65%_38%,_rgba(78,104,253,0.75)_0%,_rgb(34,55,175)_40%,_rgb(8,21,99)_70%,_rgb(10,14,42)_100%)] text-slate-100">
+    <div class="min-h-screen bg-transparent">
         <nav class="px-10 py-10">
             <!-- <span class="nav-logo"><img src="/assets/images/magiscart_logo.png" alt="magiscart logo" class="h-10 w-auto"></span> -->
-            <span class="text-blueprimary text-2xl"><span class="font-bold">MAGIS</span>CART</span>
+            <span class="text-white/90 text-2xl"><span class="font-bold">MAGIS</span>CART</span>
          </nav>
         <main class="min-h-screen flex items-center justify-center px-4 py-10">
-            <section class="w-full max-w-6xl rounded-3xl overflow-hidden shadow-2xl shadow-black/30 bg-slate-900 ring-1 ring-white/10 backdrop-blur-xl">
+            <section class="w-full max-w-6xl rounded-[2rem] overflow-hidden border border-white/10 bg-slate-950/95 shadow-2xl shadow-slate-950/40 backdrop-blur-xl">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
-                    <div class="relative hidden lg:block bg-gradient-to-br from-cyan-500 via-sky-600 to-indigo-700 p-10">
+                    <div class="relative hidden lg:block bg-gradient-to-br from-cyan-500 via-sky-600 to-indigo-800 p-10">
                         <div class="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.2),_transparent_40%)]"></div>
-                        <div class="relative z-10 h-full flex flex-col justify-between text-slate-950">
+                        <div class="relative z-10 h-full flex flex-col justify-between text-white">
                             <div>
-                                <p class="text-sm uppercase tracking-[0.35em] font-semibold text-slate-900/80">MagisCart Trends</p>
+                                <p class="text-sm uppercase tracking-[0.35em] font-semibold text-cyan-200">MAGISCART TRENDS</p>
                                 <h1 class="mt-6 text-4xl font-extrabold leading-tight">Secure access for your student org.</h1>
-                                <p class="mt-4 max-w-md text-slate-900/80">Sign in to manage inventory, track sales, and keep your organization’s POS running smoothly.</p>
+                                <p class="mt-4 max-w-md text-white/80">Sign in to manage inventory, track sales, and keep your organization’s POS running smoothly.</p>
                             </div>
-                            <div class="mt-10 space-y-4 text-sm text-slate-900/80">
-                                <p><span class="font-semibold">Fast POS</span> for on-campus events</p>
-                                <p><span class="font-semibold">Inventory control</span> in one dashboard</p>
-                                <p><span class="font-semibold">Designed for ADNU</span> student organizations</p>
+                            <div class="mt-10 space-y-4 text-sm text-white/80">
+                                <p><span class="font-semibold text-white">Fast POS</span> for on-campus events</p>
+                                <p><span class="font-semibold text-white">Inventory control</span> in one dashboard</p>
+                                <p><span class="font-semibold text-white">Designed for ADNU</span> student organizations</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="px-8 py-10 sm:px-12 sm:py-12">
+                    <div class="bg-slate-950/80 px-8 py-10 sm:px-12 sm:py-12">
                         <div class="mb-8 text-center lg:text-left">
-                            <p class="text-sm uppercase tracking-[0.35em] text-cyan-400 font-semibold">Welcome back</p>
+                            <p class="text-sm uppercase tracking-[0.35em] text-cyan-300 font-semibold">Welcome back</p>
                             <h2 class="mt-3 text-3xl font-bold text-white">Login to your account</h2>
-                            <p class="mt-3 text-slate-400">Enter your credentials below to continue to the MagisCart dashboard.</p>
+                            <p class="mt-3 text-cyan-100/80">Enter your credentials below to continue to the MagisCart dashboard.</p>
                         </div>
 
                         <form action="dashboardmain.html" method="get" class="space-y-6">
