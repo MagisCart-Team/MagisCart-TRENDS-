@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="css/global.css">
     <title>MagisCart</title>
     <meta name="description" content="A Dual-Interfaced POS and Inventory System for Official ADNU Student Organizations">
 
@@ -22,18 +22,18 @@
         }
 
         /* ── Keyframes ── */
-        @keyframes fadeUp {
+        /* @keyframes fadeUp {
             from { opacity: 0; transform: translateY(22px); }
             to   { opacity: 1; transform: translateY(0); }
-        }
+        } */
 
         /* ── Utilities ── */
-        .animate-fade-up { animation: fadeUp 0.5s ease both; }
+        /* .animate-fade-up { animation: fadeUp 0.5s ease both; }
         .delay-0 { animation-delay: 0.00s; }
         .delay-1 { animation-delay: 0.10s; }
         .delay-2 { animation-delay: 0.20s; }
         .delay-3 { animation-delay: 0.32s; }
-        .delay-4 { animation-delay: 0.44s; }
+        .delay-4 { animation-delay: 0.44s; } */
 
         /* Nav underline links — identical to marketplace */
         .nav-link {
@@ -110,7 +110,7 @@
     <div class="relative z-10 flex flex-col min-h-screen">
 
         <!-- ── Nav — identical structure to marketplace ── -->
-        <nav class="px-10 py-8 flex items-center justify-between animate-fade-up delay-0">
+        <nav class="px-10 py-8 flex items-center justify-between">
             <span class="text-2xl tracking-tight">
                 <span class="text-blueprimary font-bold">MAGIS</span><span class="text-whiteprimary">CART</span>
             </span>
@@ -125,15 +125,13 @@
         <section class="flex flex-col justify-center items-center text-center flex-1 px-4 py-24 gap-5">
 
             <!-- Eyebrow label — same style as marketplace -->
-            <div class="animate-fade-up delay-1
-                        text-[0.62rem] tracking-[0.22em] uppercase"
+            <div class="text-[0.62rem] tracking-[0.22em] uppercase"
                  style="color:rgba(218,222,235,0.28);">
                 ADNU Student Organizations
             </div>
 
             <!-- Headline -->
-            <h1 class="animate-fade-up delay-2
-                       font-bold text-center tracking-tighter leading-none"
+            <h1 class="font-bold text-center tracking-tighter leading-none"
                 style="font-size:clamp(3rem,7vw,5rem); color:#DADEEB;">
                 Empowering<br>
                 <span class="text-yellowprimary relative inline-block">
@@ -144,14 +142,14 @@
             </h1>
 
             <!-- Subtext — same muted style as marketplace -->
-            <p class="animate-fade-up delay-3 text-center text-[0.85rem] max-w-md"
+            <p class="text-center text-[0.85rem] max-w-md"
                style="color:rgba(218,222,235,0.38);">
                 A centralized hub for Ateneo de Naga University student organization
                 merchandise and inventory management.
             </p>
 
             <!-- CTA buttons -->
-            <div class="animate-fade-up delay-4 flex gap-3 flex-wrap justify-center pt-4">
+            <div class="flex gap-3 flex-wrap justify-center pt-4">
 
                 <!-- Primary: yellow, filled -->
                 <a href="market.html"
@@ -178,7 +176,7 @@
             </div>
 
             <!-- Divider line — same as marketplace section divider -->
-            <div class="animate-fade-up delay-4 flex items-center gap-4 mt-16 w-full max-w-md">
+            <div class="flex items-center gap-4 mt-16 w-full max-w-md">
                 <div class="h-px flex-1" style="background:rgba(218,222,235,0.07);"></div>
                 <span class="text-[0.62rem] tracking-[0.18em] uppercase"
                       style="color:rgba(218,222,235,0.22);">Built for ADNU Orgs</span>
@@ -186,7 +184,7 @@
             </div>
 
             <!-- Feature pills -->
-            <div class="animate-fade-up delay-4 flex flex-wrap justify-center gap-3 max-w-lg">
+            <div class="flex flex-wrap justify-center gap-3 max-w-lg">
                 <span class="px-4 py-2 rounded-2xl text-[0.7rem] tracking-wide"
                       style="background:rgba(78,104,253,0.12); color:rgba(218,222,235,0.55); border:1px solid rgba(78,104,253,0.2);">
                     📦 Inventory Management
