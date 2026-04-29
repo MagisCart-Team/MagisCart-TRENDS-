@@ -6,31 +6,96 @@
     
     <title>MagisCart: Login</title>
     <meta name="description" content="A Dual-Interfaced POS and Inventory System for Official ADNU Student Organizations">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
-    <style>body { font-family: 'Montserrat', system-ui, sans-serif; }</style>
-    
+    <link rel="stylesheet" href="css/global.css">
+
     <!-- Tailwind CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bluelight:     #4E68FD;
+            --color-blueprimary:   #2237AF;
+            --color-bluedark:      #081563;
+            --color-blueblack:     #0A0E2A;
+            --color-yellowprimary: #F6D560;
+            --color-whiteprimary:  #DADEEB;
+        }
+
+        /* Nav underline links */
+        .nav-link {
+            position: relative;
+            color: rgba(218,222,235,0.38);
+            font-size: 0.7rem;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0;
+            width: 0; height: 1px;
+            background: #F6D560;
+            transition: width 0.24s ease;
+        }
+        .nav-link:hover { color: #F6D560; }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Input glow on focus */
+        .form-input {
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus {
+            border-color: rgba(78,104,253,0.6);
+            background: rgba(78,104,253,0.09);
+            box-shadow: 0 0 0 3px rgba(78,104,253,0.14);
+            outline: none;
+        }
+    </style>
 </head>
 
-<body class="min-h-screen bg-[radial-gradient(ellipse_70%_65%_at_65%_38%,_rgba(78,104,253,0.75)_0%,_rgb(34,55,175)_40%,_rgb(8,21,99)_70%,_rgb(10,14,42)_100%)] text-slate-100">
-    <div class="min-h-screen bg-transparent">
-        <nav class="px-10 py-10">
-            <!-- <span class="nav-logo"><img src="/assets/images/magiscart_logo.png" alt="magiscart logo" class="h-10 w-auto"></span> -->
-            <span class="text-white/90 text-2xl"><span class="font-bold">MAGIS</span>CART</span>
-         </nav>
-        <main class="min-h-screen flex items-center justify-center px-4 py-10">
+<body class="min-h-screen overflow-x-hidden" style="background:#0A0E2A;">
+
+    <!-- Radial gradient background -->
+    <div class="fixed inset-0 z-0 pointer-events-none"
+         style="background: radial-gradient(ellipse 75% 62% at 62% 32%,
+                rgba(78,104,253,0.68) 0%,
+                #2237AF 38%,
+                #081563 68%,
+                #0A0E2A 100%);"></div>
+
+    <!-- Subtle grid overlay -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-100"
+         style="background-image:
+                    repeating-linear-gradient(rgba(78,104,253,0.055) 0px,rgba(78,104,253,0.055) 1px,transparent 1px,transparent 48px),
+                    repeating-linear-gradient(90deg,rgba(78,104,253,0.055) 0px,rgba(78,104,253,0.055) 1px,transparent 1px,transparent 48px);"></div>
+
+    <!-- Page -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- ── Nav ── -->
+        <nav class="px-10 py-8 flex items-center justify-between">
+            <span class="text-[1.35rem] tracking-tight">
+                <span class="text-blueprimary font-extrabold">MAGIS</span><span class="text-whiteprimary">CART</span>
+            </span>
+            <div class="flex items-center gap-7">
+                <a href="index.html" class="nav-link">Home</a>
+                <!-- <a href="#" class="nav-link">Help</a> -->
+            </div>
+        </nav>
+
+        <!-- ── Main ── -->
+        <main class="flex-1 flex items-center justify-center px-4 py-10">
             <section class="w-full max-w-6xl rounded-[2rem] overflow-hidden border border-white/10 bg-white/10 shadow-2xl shadow-slate-950/40 backdrop-blur-xl">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
+
+                    <!-- Left panel -->
                     <div class="relative hidden lg:block bg-gradient-to-br from-cyan-500 via-sky-600 to-indigo-800 p-10">
                         <div class="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.2),_transparent_40%)]"></div>
                         <div class="relative z-10 h-full flex flex-col justify-between text-white">
                             <div>
-                                <p class="text-sm uppercase tracking-[0.35em] font-semibold text-cyan-200">MAGISCART TRENDS</p>
                                 <h1 class="mt-6 text-4xl font-extrabold leading-tight">Secure access for your student org.</h1>
-                                <p class="mt-4 max-w-md text-white/75">Sign in to manage inventory, track sales, and keep your organization’s POS running smoothly.</p>
+                                <p class="mt-4 max-w-md text-white/75">Sign in to manage inventory, track sales, and keep your organization's POS running smoothly.</p>
                             </div>
                             <div class="mt-10 space-y-4 text-sm text-white/75">
                                 <p><span class="font-semibold text-white">Fast POS</span> for on-campus events</p>
@@ -40,45 +105,87 @@
                         </div>
                     </div>
 
-                    <div class="bg-slate-950/80 px-8 py-10 sm:px-12 sm:py-12">
+                    <!-- Right panel -->
+                    <div class="px-8 py-10 sm:px-12 sm:py-12"
+                         style="background:rgba(10,14,42,0.80);">
                         <div class="mb-8 text-center lg:text-left">
-                            <p class="text-sm uppercase tracking-[0.35em] text-cyan-300 font-semibold">Welcome back</p>
-                            <h2 class="mt-3 text-3xl font-bold text-white">Login to your account</h2>
-                            <p class="mt-3 text-cyan-100/80">Enter your credentials below to continue to the MagisCart dashboard.</p>
+                            <p class="text-[0.62rem] tracking-[0.22em] uppercase"
+                               style="color:rgba(218,222,235,0.38);">Welcome back</p>
+                            <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-whiteprimary">Login to your account</h2>
+                            <p class="mt-3 text-[0.82rem]"
+                               style="color:rgba(218,222,235,0.38);">Enter your credentials below to continue to the MagisCart dashboard.</p>
                         </div>
 
+                        <!-- Form -->
                         <form action="dashboardmain.html" method="get" class="space-y-6">
                             <div>
-                                <label for="email" class="block text-sm font-medium text-slate-300">Email address</label>
-                                <input id="email" name="email" type="email" required placeholder="you@example.com" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20" />
+                                <label for="email"
+                                       class="block text-[0.72rem] font-semibold tracking-[0.1em] uppercase mb-2"
+                                       style="color:rgba(218,222,235,0.5);">Email address</label>
+                                <input id="email" name="email" type="email" required
+                                       placeholder="you@example.com"
+                                       class="form-input w-full rounded-2xl border px-4 py-3 text-[0.85rem] text-whiteprimary"
+                                       style="background:rgba(218,222,235,0.07); border-color:rgba(218,222,235,0.10);">
                             </div>
 
                             <div>
-                                <label for="password" class="flex items-center justify-between text-sm font-medium text-slate-300">
+                                <label for="password"
+                                       class="flex items-center justify-between text-[0.72rem] font-semibold tracking-[0.1em] uppercase mb-2"
+                                       style="color:rgba(218,222,235,0.5);">
                                     <span>Password</span>
-                                    <button type="button" id="togglePassword" class="text-xs text-cyan-300 hover:text-cyan-200 transition">Show</button>
+                                    <button type="button" id="togglePassword"
+                                            class="normal-case tracking-normal font-normal text-[0.72rem] transition-colors"
+                                            style="color:rgba(78,104,253,0.7);"
+                                            onmouseover="this.style.color='#4E68FD'"
+                                            onmouseout="this.style.color='rgba(78,104,253,0.7)'">Show</button>
                                 </label>
-                                <input id="password" name="password" type="password" required placeholder="••••••••" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20" />
+                                <input id="password" name="password" type="password" required
+                                       placeholder="••••••••"
+                                       class="form-input w-full rounded-2xl border px-4 py-3 text-[0.85rem] text-whiteprimary"
+                                       style="background:rgba(218,222,235,0.07); border-color:rgba(218,222,235,0.10);">
                             </div>
 
                             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <label class="inline-flex items-center gap-2 text-sm text-slate-300">
-                                    <input type="checkbox" class="h-4 w-4 rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-cyan-400" />
+                                <label class="inline-flex items-center gap-2 text-[0.78rem] cursor-pointer"
+                                       style="color:rgba(218,222,235,0.5);">
+                                    <input type="checkbox"
+                                           class="h-4 w-4 rounded border bg-transparent"
+                                           style="border-color:rgba(218,222,235,0.20); accent-color:#4E68FD;">
                                     Remember me
                                 </label>
-                                <a href="#" class="text-sm text-cyan-300 hover:text-cyan-200">Forgot password?</a>
+                                <a href="#"
+                                   class="text-[0.72rem] transition-colors"
+                                   style="color:rgba(78,104,253,0.7);"
+                                   onmouseover="this.style.color='#4E68FD'"
+                                   onmouseout="this.style.color='rgba(78,104,253,0.7)'">Forgot password?</a>
                             </div>
 
-                            <button type="submit" class="w-full rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-400">Sign in</button>
+                            <button type="submit"
+                                    class="w-full rounded-2xl px-5 py-3 text-[0.78rem] font-bold
+                                           tracking-wide uppercase text-bluedark bg-yellowprimary
+                                           cursor-pointer hover:bg-white hover:scale-105
+                                           hover:shadow-lg active:scale-95
+                                           transition-all duration-200">
+                                Sign in
+                            </button>
                         </form>
 
-                        <div class="mt-8 border-t border-slate-800 pt-6 text-center text-sm text-slate-400">
-                            <p>Don't have an account? <a href="index.html" class="text-cyan-300 hover:text-cyan-200">Return to home</a></p>
+                        <div class="mt-8 pt-6 text-center text-[0.78rem]"
+                             style="border-top:1px solid rgba(218,222,235,0.08); color:rgba(218,222,235,0.32);">
+                            <p>Don't have an account?
+                                <a href="index.html"
+                                   class="transition-colors"
+                                   style="color:rgba(78,104,253,0.7);"
+                                   onmouseover="this.style.color='#4E68FD'"
+                                   onmouseout="this.style.color='rgba(78,104,253,0.7)'">Return to home</a>
+                            </p>
                         </div>
                     </div>
+
                 </div>
             </section>
         </main>
+
     </div>
 
     <script>
