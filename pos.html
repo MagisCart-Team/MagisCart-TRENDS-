@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TACTICS POS</title>
+  <meta name="description" content="Point-of-sale system with live totals and dashboard styling." />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Montserrat', system-ui, sans-serif; }
+    body * { color: #2237AF !important; }
+    .bg-\[\#2237AF\], .bg-slate-950, .bg-red-500, .text-white { color: white !important; }
+  </style>
+</head>
+<body class="min-h-screen bg-[radial-gradient(ellipse_70%_65%_at_65%_38%,_rgba(78,104,253,0.75)_0%,_rgb(34,55,175)_40%,_rgb(8,21,99)_70%,_rgb(10,14,42)_100%)] text-slate-900">
+  <div class="min-h-screen bg-transparent">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div class="overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/90 shadow-xl shadow-slate-300/40 backdrop-blur-lg">
+        <div class="border-b border-slate-200/70 px-6 py-5 sm:px-8">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <a href="dashboardmain.html" class="inline-flex items-center gap-3 text-slate-700 transition hover:text-slate-900">
+              <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm">
+                <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+              </span>
+              <span class="text-sm font-semibold">Back</span>
+            </a>
+            <div class="flex items-center justify-between gap-3 md:justify-end">
+              <nav class="hidden items-center gap-2 rounded-3xl bg-slate-100 p-2 md:flex">
+                <a href="dashboardmain.html" class="rounded-2xl px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">Dashboard</a>
+                <a href="products.html" class="rounded-2xl px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">Products</a>
+                <a href="pos.html" class="rounded-2xl bg-[#2237AF]/10 px-4 py-2 text-sm font-semibold text-[#2237AF]">POS</a>
+                <a href="#" class="rounded-2xl px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">Reports</a>
+              </nav>
+              <div class="flex items-center gap-3">
+                <button type="button" aria-label="Cart" class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm transition hover:bg-slate-200">
+                  <svg viewBox="0 0 24 24" fill="none" class="h-6 w-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9.5a2 2 0 0 1-2 1.5H8a2 2 0 0 1-2-2V6Z" /><circle cx="9" cy="20" r="1" /><circle cx="18" cy="20" r="1" /></svg>
+                </button>
+                <img src="assets/images/tactics_logo.png" alt="TACTICS avatar" class="h-12 w-12 rounded-full object-cover shadow-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 py-8 sm:px-8">
+          <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="text-sm uppercase tracking-[0.35em] text-sky-500">Point of Sale</p>
+              <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-950">TACTICS POS</h1>
+              <p class="mt-3 max-w-2xl text-slate-600">Fast checkout with live line items, quantities, and total calculations.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <span class="rounded-full bg-sky-100 px-4 py-2 text-sm font-semibold text-sky-700">Live total</span>
+              <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">Easy checkout</span>
+            </div>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-[1.7fr_1fr]">
+            <section class="space-y-6 rounded-[1.75rem] border border-slate-200/70 bg-slate-50 p-6 shadow-sm">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Quick-tap products</p>
+                  <h2 class="mt-2 text-2xl font-bold text-slate-950">Tap a product to add it to the sale</h2>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                  <button id="clearSale" type="button" class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100">Clear sale</button>
+                  <button id="checkoutTop" type="button" class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100">Checkout</button>
+                </div>
+              </div>
+
+              <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <template id="productTemplate">
+                  <button type="button" class="group rounded-[1.5rem] bg-white p-5 text-left shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg">
+                    <div class="flex items-start justify-between gap-3">
+                      <div>
+                        <p class="text-base font-semibold text-slate-950">Product name</p>
+                        <p class="mt-2 text-sm text-slate-500">₱0.00 PHP</p>
+                      </div>
+                      <span class="inline-flex h-10 w-10 items-center justify-center rounded-3xl bg-sky-100 text-sky-700">+</span>
+                    </div>
+                  </button>
+                </template>
+                <div id="productGrid" class="contents"></div>
+              </div>
+            </section>
+
+            <aside class="rounded-[1.75rem] border border-slate-200/70 bg-white p-6 shadow-sm">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <p class="text-sm uppercase tracking-[0.35em] text-slate-500">Current sale</p>
+                  <p class="mt-2 text-2xl font-bold text-slate-950">Order summary</p>
+                </div>
+                <span id="saleStatus" class="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">Waiting for items</span>
+              </div>
+
+              <div id="saleItems" class="mt-6 space-y-4">
+                <p class="text-sm text-slate-500">Add products from the left panel to build the sale.</p>
+              </div>
+
+              <div class="mt-6 rounded-[1.5rem] border border-slate-200/70 bg-slate-50 p-4">
+                <div class="flex items-center justify-between text-sm text-slate-600">
+                  <span>Subtotal</span>
+                  <span id="subtotal">₱0.00</span>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-base font-semibold text-slate-950">
+                  <span>Total</span>
+                  <span id="totalAmount">₱0.00</span>
+                </div>
+              </div>
+
+              <button id="chargeCash" type="button" class="mt-6 w-full rounded-3xl bg-[#2237AF] px-5 py-4 text-sm font-semibold text-white transition hover:bg-[#1A2F9A]">Charge Cash</button>
+              <p id="checkoutMessage" class="mt-4 text-sm text-emerald-700 hidden"></p>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: 'ada-shirt', name: 'Ada Lovelace T-Shirt', price: 150.00, stock: 67 },
+      { id: 'lanyard', name: 'Lanyard', price: 100.00, stock: 12 },
+      { id: 'tote-bag', name: 'Tote Bag', price: 120.00, stock: 8 },
+      { id: 'stickers', name: 'Sticker Pack', price: 45.00, stock: 34 },
+      { id: 'notebook', name: 'Notebook', price: 95.00, stock: 23 },
+      { id: 'water-bottle', name: 'Water Bottle', price: 185.00, stock: 11 }
+    ];
+
+    const cart = [];
+    const productGrid = document.getElementById('productGrid');
+    const saleItems = document.getElementById('saleItems');
+    const subtotalEl = document.getElementById('subtotal');
+    const totalAmountEl = document.getElementById('totalAmount');
+    const saleStatus = document.getElementById('saleStatus');
+    const checkoutMessage = document.getElementById('checkoutMessage');
+    const clearSale = document.getElementById('clearSale');
+    const checkoutTop = document.getElementById('checkoutTop');
+    const chargeCash = document.getElementById('chargeCash');
+
+    function formatMoney(value) {
+      return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', maximumFractionDigits: 2 }).format(value);
+    }
+
+    function findCartItem(id) {
+      return cart.find(item => item.id === id);
+    }
+
+    function renderProducts() {
+      productGrid.innerHTML = '';
+      const template = document.getElementById('productTemplate');
+
+      products.forEach(product => {
+        const node = template.content.firstElementChild.cloneNode(true);
+        node.querySelector('p').textContent = product.name;
+        node.querySelectorAll('p')[1].textContent = formatMoney(product.price);
+        node.querySelector('span').textContent = '+';
+        node.insertAdjacentHTML('beforeend', `<p class="mt-5 text-xs uppercase tracking-[0.3em] text-slate-400">${product.stock} stocks available</p>`);
+        node.addEventListener('click', () => addProduct(product.id));
+        productGrid.appendChild(node);
+      });
+    }
+
+    function addProduct(productId) {
+      const product = products.find(item => item.id === productId);
+      if (!product) return;
+      const cartItem = findCartItem(productId);
+      if (cartItem) {
+        cartItem.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+      renderCart();
+    }
+
+    function changeQuantity(productId, delta) {
+      const cartItem = findCartItem(productId);
+      if (!cartItem) return;
+      cartItem.quantity += delta;
+      if (cartItem.quantity < 1) {
+        removeFromCart(productId);
+        return;
+      }
+      renderCart();
+    }
+
+    function removeFromCart(productId) {
+      const index = cart.findIndex(item => item.id === productId);
+      if (index !== -1) {
+        cart.splice(index, 1);
+      }
+      renderCart();
+    }
+
+    function clearCart() {
+      cart.length = 0;
+      checkoutMessage.classList.add('hidden');
+      checkoutMessage.textContent = '';
+      renderCart();
+    }
+
+    function renderCart() {
+      saleItems.innerHTML = '';
+      if (cart.length === 0) {
+        saleItems.innerHTML = '<p class="text-sm text-slate-500">Add products from the left panel to build the sale.</p>';
+        saleStatus.textContent = 'Waiting for items';
+        saleStatus.className = 'rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700';
+      } else {
+        cart.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'rounded-[1.5rem] border border-slate-200/70 bg-slate-50 p-4';
+          row.innerHTML = `
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="font-semibold text-slate-950">${item.name}</p>
+                <p class="mt-1 text-sm text-slate-500">${formatMoney(item.price)}</p>
+              </div>
+              <button type="button" class="text-slate-400 transition hover:text-slate-700" aria-label="Remove item">×</button>
+            </div>
+            <div class="mt-4 flex items-center justify-between gap-3 text-sm text-slate-600">
+              <div class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm ring-1 ring-slate-200">
+                <button type="button" class="text-slate-600 hover:text-slate-950" data-action="decrease">−</button>
+                <span class="w-6 text-center font-semibold text-slate-950">${item.quantity}</span>
+                <button type="button" class="text-slate-600 hover:text-slate-950" data-action="increase">+</button>
+              </div>
+              <span class="font-semibold text-slate-950">${formatMoney(item.price * item.quantity)}</span>
+            </div>
+          `;
+          row.querySelector('button[aria-label="Remove item"]').addEventListener('click', () => removeFromCart(item.id));
+          row.querySelector('button[data-action="decrease"]').addEventListener('click', () => changeQuantity(item.id, -1));
+          row.querySelector('button[data-action="increase"]').addEventListener('click', () => changeQuantity(item.id, 1));
+
+          saleItems.appendChild(row);
+        });
+        saleStatus.textContent = 'Ready to checkout';
+        saleStatus.className = 'rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700';
+      }
+
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      subtotalEl.textContent = formatMoney(subtotal);
+      totalAmountEl.textContent = formatMoney(subtotal);
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        checkoutMessage.classList.remove('hidden');
+        checkoutMessage.textContent = 'Add at least one item before charging cash.';
+        checkoutMessage.className = 'mt-4 text-sm text-amber-700';
+        return;
+      }
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      checkoutMessage.classList.remove('hidden');
+      checkoutMessage.className = 'mt-4 text-sm text-emerald-700';
+      checkoutMessage.textContent = `Sale recorded — ${formatMoney(total)} collected.`;
+      clearCart();
+    }
+
+    clearSale.addEventListener('click', clearCart);
+    checkoutTop.addEventListener('click', checkout);
+    chargeCash.addEventListener('click', checkout);
+
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>
