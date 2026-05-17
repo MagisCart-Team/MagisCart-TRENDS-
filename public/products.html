@@ -88,16 +88,16 @@
                   <p class="text-sm uppercase tracking-[0.35em] text-slate-500">Catalog summary</p>
                   <h2 class="mt-2 text-2xl font-bold text-slate-950">Live inventory</h2>
                 </div>
-                <span class="rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-700">12 products</span>
+                <span id="productCount" class="rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-700">0 products</span>
               </div>
               <div class="mt-6 space-y-4">
                 <div class="rounded-3xl bg-slate-50 p-4">
                   <p class="text-sm text-slate-500">Total value</p>
-                  <p class="mt-2 text-3xl font-bold text-slate-950">₱ 24,850</p>
+                  <p id="totalValue" class="mt-2 text-3xl font-bold text-slate-950">₱ 0.00</p>
                 </div>
                 <div class="rounded-3xl bg-slate-50 p-4">
                   <p class="text-sm text-slate-500">Low stock alerts</p>
-                  <p class="mt-2 text-3xl font-bold text-amber-600">2 items</p>
+                  <p id="lowStock" class="mt-2 text-3xl font-bold text-amber-600">0 items</p>
                 </div>
               </div>
             </section>
@@ -187,6 +187,14 @@
       }, 3200);
     }
 
+    function updateSummary(data) {
+      document.getElementById('productCount').textContent = `${data.length} product${data.length !== 1 ? 's' : ''}`;
+      const total = data.reduce((sum, p) => sum + parseFloat(p.price) * p.stock, 0);
+      document.getElementById('totalValue').textContent = `₱ ${total.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+      const low = data.filter(p => p.stock <= 5).length;
+      document.getElementById('lowStock').textContent = `${low} item${low !== 1 ? 's' : ''}`;
+    }
+
     function createCard(product) {
       const article = document.createElement('article');
       article.className = 'rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 shadow-sm';
@@ -226,6 +234,7 @@
         });
         const data = await res.json();
         productGrid.innerHTML = '';
+        updateSummary(data);
         if (data.length === 0) {
           productGrid.innerHTML = '<p class="text-sm text-slate-500 col-span-3">No products yet. Add one above!</p>';
           return;
@@ -278,6 +287,7 @@
         if (res.ok) {
           card.remove();
           showToast('Product deleted.');
+          loadProducts();
         } else {
           showToast('Failed to delete product.');
         }
