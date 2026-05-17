@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>MagisCart: Register</title>
+    <meta name="description" content="A Dual-Interfaced POS and Inventory System for Official ADNU Student Organizations">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <style>body { font-family: 'Montserrat', system-ui, sans-serif; }</style>
+    
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Tailwind theme -->
+    <style type="text/tailwindcss">
+    @theme {
+        --color-bluelight: #4E68FD;
+        --color-blueprimary: #2237AF;
+        --color-bluedark: #081563;
+        --color-blueblack: #0A0E2A;
+        --color-yellowprimary: #F6D560;
+        --color-whiteprimary: #FFFFFF;
+        --color-greyprimary: #D9D9D9;
+    }
+    @theme {
+        --background-image-radial-blue: radial-gradient(
+        ellipse 70% 65% at 65% 38%,
+        rgba(78, 104, 253, 0.75) 0%,
+        #2237AF 40%,
+        #081563 70%,
+        #0A0E2A 100%
+        );
+    }
+
+    /* Nav underline links */
+    .nav-link {
+        position: relative;
+        color: rgba(218,222,235,0.38);
+        font-size: 0.7rem;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        transition: color 0.2s;
+    }
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px; left: 0;
+        width: 0; height: 1px;
+        background: #F6D560;
+        transition: width 0.24s ease;
+    }
+    .nav-link:hover { color: #F6D560; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Password strength bar */
+    .strength-bar {
+        height: 3px;
+        border-radius: 9999px;
+        transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden" style="background:#0A0E2A;">
+
+    <!-- Radial gradient background -->
+    <div class="fixed inset-0 z-0 pointer-events-none"
+         style="background: radial-gradient(ellipse 75% 62% at 62% 32%,
+                rgba(78,104,253,0.68) 0%,
+                #2237AF 38%,
+                #081563 68%,
+                #0A0E2A 100%);"></div>
+
+    <!-- Subtle grid overlay -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-100"
+         style="background-image:
+                    repeating-linear-gradient(rgba(78,104,253,0.055) 0px,rgba(78,104,253,0.055) 1px,transparent 1px,transparent 48px),
+                    repeating-linear-gradient(90deg,rgba(78,104,253,0.055) 0px,rgba(78,104,253,0.055) 1px,transparent 1px,transparent 48px);"></div>
+
+    <!-- Page -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+        
+        <!-- ── Nav ── -->
+        <nav class="px-10 py-8 flex items-center justify-between">
+            <span class="text-[1.35rem] tracking-tight">
+                <span class="text-blueprimary font-bold">MAGIS</span><span class="text-whiteprimary">CART</span>
+            </span>
+            <div class="flex items-center gap-7">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="login.html" class="nav-link">Login</a>
+            </div>
+        </nav>
+
+        <!-- Form -->
+        <main class="flex-1 flex items-center justify-center px-4 py-10">
+            <section class="w-full max-w-6xl rounded-[2rem] overflow-hidden border border-white/10 bg-white/10 shadow-2xl shadow-slate-950/40 backdrop-blur-xl">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+
+                    <!-- Left panel -->
+                    <div class="relative hidden lg:block bg-gradient-to-br from-cyan-500 via-sky-600 to-indigo-800 p-10">
+                        <div class="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.2),_transparent_40%)]"></div>
+                        <div class="relative z-10 h-full flex flex-col justify-between text-white">
+                            <div>
+                                <p class="text-sm uppercase tracking-[0.35em] font-semibold text-cyan-200">MAGISCART REGISTRATION</p>
+                                <h1 class="mt-6 text-4xl font-extrabold leading-tight">Get your student org up and running.</h1>
+                                <p class="mt-4 max-w-md text-white/75">Create an account to start managing your inventory and POS in one place — built exclusively for ADNU student organizations.</p>
+                            </div>
+                            <div class="mt-10 space-y-4 text-sm text-white/75">
+                                <p><span class="font-semibold text-white">One account</span> per student organization</p>
+                                <p><span class="font-semibold text-white">Instant access</span> to your dashboard after sign-up</p>
+                                <p><span class="font-semibold text-white">Secure &amp; private</span> — your data stays yours</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right panel — form -->
+                    <div class="bg-slate-950/80 px-8 py-10 sm:px-12 sm:py-12">
+                        <div class="mb-8 text-center lg:text-left">
+                            <p class="text-sm uppercase tracking-[0.35em] text-cyan-300 font-semibold">New here?</p>
+                            <h2 class="mt-3 text-3xl font-bold text-white">Create an account</h2>
+                            <p class="mt-3 text-cyan-100/80">Fill in the details below to register your organization on MagisCart.</p>
+                        </div>
+                        
+                        <form action="dashboardmain.html" method="get" class="space-y-5" id="registerForm" novalidate>
+
+                            <!-- Organization Name -->
+                            <div>
+                                <label for="orgName" class="block text-sm font-medium text-slate-300">Organization Name <span class="text-cyan-400">*</span></label>
+                                <input id="orgName" name="orgName" type="text" required
+                                    placeholder="e.g. The ADNU Computer Society"
+                                    class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-600" />
+                                <p id="orgNameError" class="mt-1 text-xs text-red-400 hidden">Organization name is required.</p>
+                            </div>
+
+                            <!-- Acronym / Short Name -->
+                            <div>
+                                <label for="orgAcronym" class="block text-sm font-medium text-slate-300">Acronym / Short Name</label>
+                                <input id="orgAcronym" name="orgAcronym" type="text"
+                                    placeholder="e.g. ADNUCS"
+                                    class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-600" />
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-slate-300">Organization Email <span class="text-cyan-400">*</span></label>
+                                <input id="email" name="email" type="email" required
+                                    placeholder="orgname@adnu.edu.ph"
+                                    class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-600" />
+                                <p id="emailError" class="mt-1 text-xs text-red-400 hidden">Please enter a valid email address.</p>
+                            </div>
+
+                            <!-- Contact Person -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="contactPerson" class="block text-sm font-medium text-slate-300">Contact Person <span class="text-cyan-400">*</span></label>
+                                    <input id="contactPerson" name="contactPerson" type="text" required
+                                        placeholder="Full name"
+                                        class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-600" />
+                                    <p id="contactPersonError" class="mt-1 text-xs text-red-400 hidden">Contact person is required.</p>
+                                </div>
+                                <div>
+                                    <label for="role" class="block text-sm font-medium text-slate-300">Role / Position</label>
+                                    <input id="role" name="role" type="text"
+                                        placeholder="e.g. President, Treasurer"
+                                        class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-600" />
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <label for="password" class="flex items-center justify-between text-sm font-medium text-slate-300">
+                                    <span>Password <span class="text-cyan-400">*</span></span>
+                                    <button type="button" id="togglePassword" class="text-xs text-cyan-300 hover:text-cyan-200 transition">Show</button>
+                                </label>
+                                <input id="password" name="password" type="password" required
+                                    placeholder="••••••••"
+                                    class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-600" />
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div>
+                                <label for="confirmPassword" class="flex items-center justify-between text-sm font-medium text-slate-300">
+                                    <span>Confirm Password <span class="text-cyan-400">*</span></span>
+                                    <button type="button" id="toggleConfirm" class="text-xs text-cyan-300 hover:text-cyan-200 transition">Show</button>
+                                </label>
+                                <input id="confirmPassword" name="confirmPassword" type="password" required
+                                    placeholder="••••••••"
+                                    class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-600" />
+                                <p id="confirmError" class="mt-1 text-xs text-red-400 hidden">Passwords do not match.</p>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-400">
+                                Create Account
+                            </button>
+                        </form>
+
+                        <div class="mt-8 border-t border-slate-800 pt-6 text-center text-sm text-slate-400">
+                            <p>Already have an account? <a href="login.html" class="text-cyan-300 hover:text-cyan-200">Sign in here</a></p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <script>
+        /* ── Show/hide password toggles ── */
+        function makeToggle(toggleId, inputId) {
+            const btn = document.getElementById(toggleId);
+            const inp = document.getElementById(inputId);
+            btn?.addEventListener('click', () => {
+                const isHidden = inp.type === 'password';
+                inp.type = isHidden ? 'text' : 'password';
+                btn.textContent = isHidden ? 'Hide' : 'Show';
+            });
+        }
+        makeToggle('togglePassword', 'password');
+        makeToggle('toggleConfirm', 'confirmPassword');
+    </script>
+</body>
+</html>
