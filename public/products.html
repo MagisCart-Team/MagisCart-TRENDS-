@@ -159,172 +159,181 @@
   </div>
 
   <script>
-  const API = '/api/products';
+    const token = localStorage.getItem('token');
+    const productGrid = document.getElementById('productGrid');
+    const editModal = document.getElementById('editModal');
+    const closeModalButton = document.getElementById('closeModal');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const saveProduct = document.getElementById('saveProduct');
+    const toast = document.getElementById('toast');
+    const productNameInput = document.getElementById('productName');
+    const productPriceInput = document.getElementById('productPrice');
+    const productStockInput = document.getElementById('productStock');
+    const addButton = document.querySelector('form button[type="button"]');
+    const refreshButton = document.querySelector('section:last-of-type button');
+    let toastTimeout = null;
+    let currentProductId = null;
 
-  const editModal = document.getElementById('editModal');
-  const closeModalButton = document.getElementById('closeModal');
-  const cancelEdit = document.getElementById('cancelEdit');
-  const saveProduct = document.getElementById('saveProduct');
-  const toast = document.getElementById('toast');
-  const productNameInput = document.getElementById('productName');
-  const productPriceInput = document.getElementById('productPrice');
-  const productStockInput = document.getElementById('productStock');
-  const productGrid = document.getElementById('productGrid');
-  const addButton = document.querySelector('form button[type="button"]');
-  const refreshButton = document.querySelector('section button[type="button"]');
+    function formatMoney(value) {
+      return `₱ ${parseFloat(value).toFixed(2)} PHP`;
+    }
 
-  let currentProductCard = null;
-  let toastTimeout = null;
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-4');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-4');
+      }, 3200);
+    }
 
-  // ── SVGs (reusable) ──────────────────────────────────────
-  const editSVG = `<svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10.5-10.5a1.5 1.5 0 0 0-2.12-2.12L6 17.88V20Z"/><path d="M13.5 6.5l4 4"/></svg>`;
-  const deleteSVG = `<svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>`;
-
-  // ── Build a product card ─────────────────────────────────
-  function createCard(product) {
-    const card = document.createElement('article');
-    card.className = 'rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 shadow-sm';
-    card.dataset.productId = product.id;
-    card.innerHTML = `
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <p class="text-base font-semibold text-slate-950 product-name">${product.name}</p>
-          <p class="mt-2 text-sm text-slate-500 product-price">₱ ${parseFloat(product.price).toFixed(2)} PHP</p>
+    function createCard(product) {
+      const article = document.createElement('article');
+      article.className = 'rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 shadow-sm';
+      article.dataset.productId = product.id;
+      article.innerHTML = `
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="text-base font-semibold text-slate-950 product-name">${product.name}</p>
+            <p class="mt-2 text-sm text-slate-500 product-price">${formatMoney(product.price)}</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="edit-product inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm transition hover:bg-slate-200">
+              <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 20h4l10.5-10.5a1.5 1.5 0 0 0-2.12-2.12L6 17.88V20Z" />
+                <path d="M13.5 6.5l4 4" />
+              </svg>
+            </button>
+            <button class="delete-product inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-red-500 text-white shadow-sm transition hover:bg-red-600">
+              <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" />
+              </svg>
+            </button>
+          </div>
         </div>
-        <div class="flex gap-2">
-          <button class="edit-product inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm transition hover:bg-slate-200">${editSVG}</button>
-          <button class="delete-product inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-red-500 text-white shadow-sm transition hover:bg-red-600">${deleteSVG}</button>
-        </div>
-      </div>
-      <p class="mt-4 text-sm text-slate-500 product-stock">${product.stock} stocks available</p>
-    `;
-    card.querySelector('.edit-product').addEventListener('click', () => openEditModal(card));
-    card.querySelector('.delete-product').addEventListener('click', () => deleteProduct(card));
-    return card;
-  }
+        <p class="mt-4 text-sm text-slate-500 product-stock">${product.stock} stocks available</p>
+      `;
+      article.querySelector('.edit-product').addEventListener('click', () => openEditModal(article, product.id));
+      article.querySelector('.delete-product').addEventListener('click', () => deleteProduct(product.id, article));
+      return article;
+    }
 
-  // ── READ ─────────────────────────────────────────────────
-  async function loadProducts() {
-    productGrid.innerHTML = `<p class="text-sm text-slate-400 col-span-3">Loading...</p>`;
-    try {
-      const res = await fetch(API);
-      const products = await res.json();
-      productGrid.innerHTML = '';
-      if (products.length === 0) {
-        productGrid.innerHTML = `<p class="text-sm text-slate-400 col-span-3">No products yet.</p>`;
+    async function loadProducts() {
+      productGrid.innerHTML = '<p class="text-sm text-slate-500 col-span-3">Loading products...</p>';
+      try {
+        const res = await fetch('/api/products', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        productGrid.innerHTML = '';
+        if (data.length === 0) {
+          productGrid.innerHTML = '<p class="text-sm text-slate-500 col-span-3">No products yet. Add one above!</p>';
+          return;
+        }
+        data.forEach(product => productGrid.appendChild(createCard(product)));
+      } catch (err) {
+        productGrid.innerHTML = '<p class="text-sm text-red-500 col-span-3">Failed to load products.</p>';
+      }
+    }
+
+    addButton.addEventListener('click', async () => {
+      const inputs = document.querySelectorAll('form input, form textarea');
+      const name = inputs[0].value.trim();
+      const price = parseFloat(inputs[1].value.trim());
+      const stock = parseInt(inputs[2].value.trim(), 10);
+
+      if (!name || isNaN(price) || isNaN(stock)) {
+        showToast('Please enter valid product details.');
         return;
       }
-      products.forEach(p => productGrid.appendChild(createCard(p)));
-    } catch {
-      showToast('Failed to load products.');
+
+      try {
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ name, price, stock })
+        });
+        if (res.ok) {
+          showToast('Product added!');
+          inputs.forEach(i => i.value = '');
+          loadProducts();
+        } else {
+          showToast('Failed to add product.');
+        }
+      } catch (err) {
+        showToast('Something went wrong.');
+      }
+    });
+
+    async function deleteProduct(id, card) {
+      if (!confirm('Delete this product?')) return;
+      try {
+        const res = await fetch(`/api/products/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          card.remove();
+          showToast('Product deleted.');
+        } else {
+          showToast('Failed to delete product.');
+        }
+      } catch (err) {
+        showToast('Something went wrong.');
+      }
     }
-  }
 
-  loadProducts();
-  refreshButton.addEventListener('click', loadProducts);
-
-  // ── CREATE ───────────────────────────────────────────────
-  addButton.addEventListener('click', async () => {
-    const inputs = document.querySelectorAll('form input, form textarea');
-    const name        = inputs[0].value.trim();
-    const price       = parseFloat(inputs[1].value);
-    const stock       = parseInt(inputs[2].value, 10);
-    const category    = inputs[3].value.trim();
-    const description = inputs[4].value.trim();
-
-    if (!name || isNaN(price) || isNaN(stock)) {
-      showToast('Please enter valid product details.');
-      return;
+    function openEditModal(card, id) {
+      currentProductId = id;
+      productNameInput.value = card.querySelector('.product-name').textContent.trim();
+      productPriceInput.value = card.querySelector('.product-price').textContent.replace('₱', '').replace('PHP', '').trim();
+      productStockInput.value = card.querySelector('.product-stock').textContent.replace('stocks available', '').trim();
+      editModal.classList.remove('hidden');
     }
 
-    try {
-      const res = await fetch(API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, price, stock, category, description })
-      });
-      const product = await res.json();
-      productGrid.appendChild(createCard(product));
-      showToast('Product added!');
-      inputs.forEach(i => i.value = '');
-    } catch {
-      showToast('Failed to add product.');
+    function closeEditModal() {
+      editModal.classList.add('hidden');
+      currentProductId = null;
     }
-  });
 
-  // ── UPDATE ───────────────────────────────────────────────
-  saveProduct.addEventListener('click', async () => {
-    if (!currentProductCard) return;
-    const id    = currentProductCard.dataset.productId;
-    const name  = productNameInput.value.trim();
-    const price = parseFloat(productPriceInput.value) || 0;
-    const stock = parseInt(productStockInput.value, 10) || 0;
+    saveProduct.addEventListener('click', async () => {
+      if (!currentProductId) return;
+      const name = productNameInput.value.trim();
+      const price = parseFloat(productPriceInput.value);
+      const stock = parseInt(productStockInput.value, 10);
 
-    try {
-      await fetch(API, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, name, price, stock })
-      });
-      currentProductCard.querySelector('.product-name').textContent = name;
-      currentProductCard.querySelector('.product-price').textContent = `₱ ${price.toFixed(2)} PHP`;
-      currentProductCard.querySelector('.product-stock').textContent = `${stock} stocks available`;
-      closeEditModal();
-      showToast('Product updated!');
-    } catch {
-      showToast('Failed to update product.');
-    }
-  });
+      try {
+        const res = await fetch(`/api/products/${currentProductId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ name, price, stock })
+        });
+        if (res.ok) {
+          closeEditModal();
+          showToast('Product updated successfully.');
+          loadProducts();
+        } else {
+          showToast('Failed to update product.');
+        }
+      } catch (err) {
+        showToast('Something went wrong.');
+      }
+    });
 
-  // ── DELETE ───────────────────────────────────────────────
-  async function deleteProduct(card) {
-    if (!confirm('Delete this product?')) return;
-    const id = card.dataset.productId;
-    try {
-      await fetch(API, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
-      card.remove();
-      showToast('Product deleted.');
-    } catch {
-      showToast('Failed to delete product.');
-    }
-  }
+    refreshButton.addEventListener('click', loadProducts);
+    closeModalButton.addEventListener('click', closeEditModal);
+    cancelEdit.addEventListener('click', closeEditModal);
+    editModal.addEventListener('click', e => { if (e.target === editModal) closeEditModal(); });
 
-  // ── Modal helpers ────────────────────────────────────────
-  function openEditModal(card) {
-    currentProductCard = card;
-    const name      = card.querySelector('.product-name').textContent.trim();
-    const priceText = card.querySelector('.product-price').textContent.replace('₱','').replace('PHP','').trim();
-    const stockText = card.querySelector('.product-stock').textContent.replace('stocks available','').trim();
-    productNameInput.value  = name;
-    productPriceInput.value = priceText;
-    productStockInput.value = stockText;
-    editModal.classList.remove('hidden');
-  }
-
-  function closeEditModal() {
-    editModal.classList.add('hidden');
-    currentProductCard = null;
-  }
-
-  closeModalButton.addEventListener('click', closeEditModal);
-  cancelEdit.addEventListener('click', closeEditModal);
-  editModal.addEventListener('click', e => { if (e.target === editModal) closeEditModal(); });
-
-  // ── Toast ────────────────────────────────────────────────
-  function showToast(message) {
-    toast.textContent = message;
-    toast.classList.remove('opacity-0', 'translate-y-4');
-    toast.classList.add('opacity-100', 'translate-y-0');
-    if (toastTimeout) clearTimeout(toastTimeout);
-    toastTimeout = setTimeout(() => {
-      toast.classList.remove('opacity-100', 'translate-y-0');
-      toast.classList.add('opacity-0', 'translate-y-4');
-    }, 3200);
-  }
-</script>
+    loadProducts();
+  </script>
 </body>
 </html>
