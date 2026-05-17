@@ -1,49 +1,53 @@
-import jwt from 'jsonwebtoken';
-import pool from '../db.js';
+import { neon } from '@neondatabase/serverless';
 
-function verifyToken(req) {
-  const auth = req.headers.authorization;
-  if (!auth) return null;
-  const token = auth.split(' ')[1];
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch {
-    return null;
-  }
-}
+const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
-  const user = verifyToken(req);
-  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // GET — fetch all products for this org
-  if (req.method === 'GET') {
-    try {
-      const result = await pool.query(
-        'SELECT * FROM products WHERE org_id = $1 ORDER BY name',
-        [user.org_id]
-      );
-      res.status(200).json(result.rows);
-    } catch (err) {
-      res.status(500).json({ error: 'Server error' });
+  try {
+    if (req.method === 'GET') {
+      const products = await sql`SELECT * FROM products ORDER BY created_at DESC`;
+      return res.status(200).json(products);
     }
-  }
 
-  // POST — add a new product
-  else if (req.method === 'POST') {
-    const { name, price, stock } = req.body;
-    try {
-      const result = await pool.query(
-        'INSERT INTO products (name, price, stock, org_id) VALUES ($1, $2, $3, $4) RETURNING *',
-        [name, price, stock, user.org_id]
-      );
-      res.status(201).json(result.rows[0]);
-    } catch (err) {
-      res.status(500).json({ error: 'Server error' });
+    if (req.method === 'POST') {
+      const { name, price, stock, category, description } = req.body;
+      if (!name || price == null || stock == null) {
+        return res.status(400).json({ error: 'name, price, and stock are required' });
+      }
+      const [product] = await sql`
+        INSERT INTO products (name, price, stock, category, description)
+        VALUES (${name}, ${price}, ${stock}, ${category ?? null}, ${description ?? null})
+        RETURNING *
+      `;
+      return res.status(201).json(product);
     }
-  }
 
-  else {
-    res.status(405).json({ error: 'Method not allowed' });
+    if (req.method === 'PUT') {
+      const { id, name, price, stock } = req.body;
+      const [product] = await sql`
+        UPDATE products
+        SET name=${name}, price=${price}, stock=${stock}
+        WHERE id=${id}
+        RETURNING *
+      `;
+      return res.status(200).json(product);
+    }
+
+    if (req.method === 'DELETE') {
+      const { id } = req.body;
+      await sql`DELETE FROM products WHERE id=${id}`;
+      return res.status(200).json({ success: true });
+    }
+
+    return res.status(405).json({ error: 'Method not allowed' });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Database error' });
   }
 }

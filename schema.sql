@@ -12,9 +12,12 @@ CREATE TABLE users (
 );
 
 CREATE TABLE products (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  price NUMERIC(10,2) NOT NULL,
-  stock INT DEFAULT 0,
-  org_id INT REFERENCES organizations(id)
+  id        SERIAL PRIMARY KEY,
+  name      VARCHAR(255) NOT NULL,
+  price     NUMERIC(10,2) NOT NULL,
+  stock     INTEGER NOT NULL DEFAULT 0,
+  category  VARCHAR(100),
+  description TEXT,
+  product_status VARCHAR(10) NOT NULL DEFAULT 'active' CHECK (product_status IN ('active', 'archived')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
