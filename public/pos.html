@@ -120,15 +120,7 @@
   </div>
 
   <script>
-    const products = [
-      { id: 'ada-shirt', name: 'Ada Lovelace T-Shirt', price: 150.00, stock: 67 },
-      { id: 'lanyard', name: 'Lanyard', price: 100.00, stock: 12 },
-      { id: 'tote-bag', name: 'Tote Bag', price: 120.00, stock: 8 },
-      { id: 'stickers', name: 'Sticker Pack', price: 45.00, stock: 34 },
-      { id: 'notebook', name: 'Notebook', price: 95.00, stock: 23 },
-      { id: 'water-bottle', name: 'Water Bottle', price: 185.00, stock: 11 }
-    ];
-
+    const token = localStorage.getItem('token');
     const cart = [];
     const productGrid = document.getElementById('productGrid');
     const saleItems = document.getElementById('saleItems');
@@ -136,9 +128,11 @@
     const totalAmountEl = document.getElementById('totalAmount');
     const saleStatus = document.getElementById('saleStatus');
     const checkoutMessage = document.getElementById('checkoutMessage');
-    const clearSale = document.getElementById('clearSale');
+    const clearSaleBtn = document.getElementById('clearSale');
     const checkoutTop = document.getElementById('checkoutTop');
     const chargeCash = document.getElementById('chargeCash');
+
+    let products = [];
 
     function formatMoney(value) {
       return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', maximumFractionDigits: 2 }).format(value);
@@ -146,6 +140,18 @@
 
     function findCartItem(id) {
       return cart.find(item => item.id === id);
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await fetch('/api/products', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        products = await res.json();
+        renderProducts();
+      } catch (err) {
+        productGrid.innerHTML = '<p class="text-sm text-slate-500">Failed to load products.</p>';
+      }
     }
 
     function renderProducts() {
@@ -166,8 +172,16 @@
     function addProduct(productId) {
       const product = products.find(item => item.id === productId);
       if (!product) return;
+      if (product.stock <= 0) {
+        alert('This product is out of stock.');
+        return;
+      }
       const cartItem = findCartItem(productId);
       if (cartItem) {
+        if (cartItem.quantity >= product.stock) {
+          alert('Not enough stock.');
+          return;
+        }
         cartItem.quantity += 1;
       } else {
         cart.push({ ...product, quantity: 1 });
@@ -188,9 +202,7 @@
 
     function removeFromCart(productId) {
       const index = cart.findIndex(item => item.id === productId);
-      if (index !== -1) {
-        cart.splice(index, 1);
-      }
+      if (index !== -1) cart.splice(index, 1);
       renderCart();
     }
 
@@ -231,7 +243,6 @@
           row.querySelector('button[aria-label="Remove item"]').addEventListener('click', () => removeFromCart(item.id));
           row.querySelector('button[data-action="decrease"]').addEventListener('click', () => changeQuantity(item.id, -1));
           row.querySelector('button[data-action="increase"]').addEventListener('click', () => changeQuantity(item.id, 1));
-
           saleItems.appendChild(row);
         });
         saleStatus.textContent = 'Ready to checkout';
@@ -243,25 +254,52 @@
       totalAmountEl.textContent = formatMoney(subtotal);
     }
 
-    function checkout() {
+    async function checkout() {
       if (cart.length === 0) {
         checkoutMessage.classList.remove('hidden');
         checkoutMessage.textContent = 'Add at least one item before charging cash.';
         checkoutMessage.className = 'mt-4 text-sm text-amber-700';
         return;
       }
+
       const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      checkoutMessage.classList.remove('hidden');
-      checkoutMessage.className = 'mt-4 text-sm text-emerald-700';
-      checkoutMessage.textContent = `Sale recorded — ${formatMoney(total)} collected.`;
-      clearCart();
+
+      try {
+        const res = await fetch('/api/sales', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            items: cart.map(item => ({ id: item.id, quantity: item.quantity, price: item.price })),
+            total
+          })
+        });
+
+        if (res.ok) {
+          checkoutMessage.classList.remove('hidden');
+          checkoutMessage.className = 'mt-4 text-sm text-emerald-700';
+          checkoutMessage.textContent = `Sale recorded — ${formatMoney(total)} collected.`;
+          clearCart();
+          loadProducts();
+        } else {
+          checkoutMessage.classList.remove('hidden');
+          checkoutMessage.className = 'mt-4 text-sm text-red-600';
+          checkoutMessage.textContent = 'Failed to record sale. Please try again.';
+        }
+      } catch (err) {
+        checkoutMessage.classList.remove('hidden');
+        checkoutMessage.className = 'mt-4 text-sm text-red-600';
+        checkoutMessage.textContent = 'Something went wrong.';
+      }
     }
 
-    clearSale.addEventListener('click', clearCart);
+    clearSaleBtn.addEventListener('click', clearCart);
     checkoutTop.addEventListener('click', checkout);
     chargeCash.addEventListener('click', checkout);
 
-    renderProducts();
+    loadProducts();
     renderCart();
   </script>
 </body>
